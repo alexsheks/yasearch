@@ -46,6 +46,12 @@
 </p>
 </details>
 
+<details>
+<summary><a href="https://youtu.be/TOxifTjT3XE?si=AA9k374_tpnEPjKh">(GoT) Джон Сноу - Белый волк.</a></summary>
+
+![gamesofthrones](https://media.giphy.com/media/Yrj96cd3ZvJvwnlAxM/giphy.gif)
+</details>
+
 
 
 # Tech.Stack
