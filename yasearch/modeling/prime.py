@@ -141,11 +141,6 @@ class IPFBERTModel(IBaseModel):
         return response
 
 
-def mean_tokens(last_hidden_states: Tensor, attention_mask: Tensor) -> Tensor:
-    last_hidden = last_hidden_states.masked_fill(~attention_mask[..., None].bool(), 0.0)
-    return last_hidden.sum(dim=1) / attention_mask.sum(dim=1)[..., None]
-
-
 class HFDocEmbedder(IDocEmbedder):
     """General class for HuggingFace embedder."""
 
@@ -160,12 +155,6 @@ class HFDocEmbedder(IDocEmbedder):
         self.model = AutoModel.from_pretrained(model_name_or_path)
         self.prefix = prefix
         self.device = device
-
-        if pooling_mode == "mean":
-            pooling_mode_func = mean_tokens
-        elif isinstance(pooling_mode, Callable[[Tensor, Tensor], Tensor]):
-            pooling_mode_func = pooling_mode
-        self._pooling_mode_func = pooling_mode_func
 
     def encode(
         self,
