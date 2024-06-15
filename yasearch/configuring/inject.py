@@ -17,7 +17,8 @@ from yasearch.processing.mask import IProcessor
 from yasearch.processing.prime import (
     M1LMProcessor,
     M2LMProcessor,
-    ATOMICLMProcessor,
+    TRIPLETProcessor,
+    ATOMICProcessor,
     INFERProcessor,
 )
 from yasearch.configuring.prime import Config
