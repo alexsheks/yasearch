@@ -1,16 +1,101 @@
 import abc
 from typing import List, Union, Optional, Dict, Any
 from collections.abc import Iterator
-from gir.etc.errors import ModelingError
+from yasearch.etc.errors import ModelingError
 import torch.nn as nn
 from loguru import logger
 import torch
 from pathlib import Path
 import simplejson as json
 import numpy as np
+import copy
 
 #: Names of the attributes in various model configs which refer to the number of dimensions in the output vectors
 OUTPUT_DIM_NAMES = ["dim", "hidden_size", "d_model"]
+
+GRANTED_MODEL_NAMES = [
+    "IPFBERT",
+    "IGLOVE",
+    "E5Model",
+    "E5SModel",
+    "E5LModel",
+    "ATOMICModel",
+    "ATOMICSModel",
+    "ATOMICLModel",
+]
+
+
+class IBaseModel(nn.Module, abc.ABC):
+    """
+    This parent class for those implementation(s) that do not fit any specific kind of domain.
+    Neither (1) NLP nor (2) CV ...
+    """
+
+    subclasses = {}
+
+    def __init_subclass__(cls, **kwargs):
+        """This automatically keeps track of all available subclasses.
+        Enables generic load() or all specific IModel implementation.
+        """
+        super().__init_subclass__(**kwargs)
+        cls.subclasses[cls.__name__] = cls
+
+    def __init__(self):
+        super().__init__()
+        self._output_dims = None
+
+    @classmethod
+    def load(
+        cls,
+        pretrained_model_name_or_path,
+        revision=None,
+        n_added_tokens=0,
+        language_model_class=None,
+        **kwargs,
+    ):
+        config_file = Path(pretrained_model_name_or_path) / "model_config.json"
+        assert config_file.exists(), "The config is not found, couldn't load the model"
+        logger.info(f"Model found locally at {pretrained_model_name_or_path}")
+        with open(config_file) as f:
+            config = json.load(f)
+        model = cls.subclasses[config["klass"]].load(pretrained_model_name_or_path)
+        return model
+
+    @abc.abstractmethod
+    def forward(self, input_ids: torch.Tensor, attention_mask: torch.Tensor):
+        raise NotImplementedError
+
+    def save_config(self, save_dir: Union[Path, str]):
+        """
+        Save the configuration of the language model in format.
+        """
+        save_filename = Path(save_dir) / "model_config.json"
+        config = copy.deepcopy(self.config)
+        config["klass"] = self.__class__.__name__
+        # string = json.sto_json_string()  # type: ignore [union-attr,operator]
+        with open(str(save_filename), "w") as f:
+            f.write(json.dumps(config))
+
+    def save(
+        self, save_dir: Union[str, Path], state_dict: Optional[Dict[Any, Any]] = None
+    ):
+        """
+        Save the model `state_dict` and its configuration file so that it can be loaded again.
+
+        :param save_dir: The directory in which the model should be saved.
+        :param state_dict: A dictionary containing the whole state of the module, including names of layers. By default, the unchanged state dictionary of the module is used.
+        """
+        Path(save_dir).mkdir(parents=True, exist_ok=True)
+        # Save Weights
+        save_name = Path(save_dir) / "pytorch_model.bin"
+        model_to_save = (
+            self.model.module if hasattr(self.model, "module") else self.model
+        )  # Only save the model itself
+
+        if not state_dict:
+            state_dict = model_to_save.state_dict()  # type: ignore [union-attr]
+        torch.save(state_dict, save_name)
+        self.save_config(save_dir)
 
 
 class ILanguageModel(nn.Module, abc.ABC):
