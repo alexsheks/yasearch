@@ -57,11 +57,13 @@ class IInjector:
             if component_name.is_dir():
                 component = IProcessor.load(Path(component_name), **processor_props)
             elif str(component_name).upper() in ("M1"):
-                component = M1Processor(**processor_props)
+                component = M1LMProcessor(**processor_props)
             elif str(component_name).upper() in ("M2"):
-                component = M2Processor(**processor_props)
+                component = M2LMProcessor(**processor_props)
             elif str(component_name).upper() in ("ATOMIC"):
                 component = ATOMICProcessor(**processor_props)
+            elif str(component_name).upper() in ("TRIPLET"):
+                component = TRIPLETProcessor(**processor_props)
             else:
                 logger.error(
                     f"Could not inject component [{component_name}] of type [processor]"
