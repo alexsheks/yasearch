@@ -32,7 +32,7 @@
 <summary><a href="https://youtu.be/JR1Zm1s6hc8?si=uE2b-dCJ79q36Qfo">Голодные игры 2012 (trailer 1)</a></summary>
 <p>
 
-![hungergames](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExMGRjampzNWU0cWRmamdkaWsyeDNvM202dW50eGp1NGY1OTF2Z3pmbyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/1YOYqxZOwJfOWWfR5c/giphy-downsized-large.gif)
+![hungergames](https://media.giphy.com/media/1YOYqxZOwJfOWWfR5c/giphy.gif)
 
 </p>
 </details>
