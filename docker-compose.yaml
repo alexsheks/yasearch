@@ -22,6 +22,15 @@ services:
       DEFAULT_VECTORIZER_MODULE: 'none'
       ENABLE_MODULES: ''
       CLUSTER_HOSTNAME: 'node1'
+
+  rethinkdb:
+    image: rethinkdb:2.4
+    ports:
+      - "8080:8080"
+      - "28015:28015"
+    volumes:
+      - rethinkdb_data:/apps/rethinkdb/data
+
   redis:
     image: redis:latest
     volumes:
@@ -32,3 +41,4 @@ services:
 volumes:
   weaviatedb:
     external: false
+  rethinkdb_data: null

@@ -32,6 +32,11 @@ clustering:
     min_topic_size: 5
     calculate_probabilities: false
 
+  db:
+    host: "localhost"
+    port: "28015"
+    database: "yappi"
+
   umap:
     n_components: 2
     n_neighbors: 3
